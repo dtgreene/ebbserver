@@ -1,0 +1,37 @@
+{
+  "name": "cncserver",
+  "private": true,
+  "version": "3.0.0",
+  "description": "A web based a web based CNC Server/Controller to drive @makersylvia's WaterColorBot and beyond",
+  "main": "cncserver.js",
+  "author": "techninja",
+  "license": "MIT",
+  "dependencies": {
+    "@serialport/parser-readline": "^10.5.0",
+    "body-parser": "^1.20.1",
+    "connect-slashes": "^1.4.0",
+    "express": "^4.18.2",
+    "ini": "^3.0.1",
+    "nconf": "^0.12.0",
+    "node-ipc": "^11.1.0",
+    "prettier": "^2.8.3",
+    "serialport": "^10.5.0",
+    "socket.io": "^4.5.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/techninja/cncserver.git"
+  },
+  "scripts": {
+    "start": "node cncserver",
+    "format": "prettier --write ."
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all"
+  }
+}
