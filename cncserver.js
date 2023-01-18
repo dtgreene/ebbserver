@@ -118,20 +118,20 @@ cncserver.settings.loadGlobalConfig(function standaloneOrModuleInit() {
   // Only if we're running standalone... try to start the server immediately!
   if (!module.parent) {
     // Load the bot specific configuration, defaulting to gConf bot type
-    cncserver.settings.loadBotConfig(function () {
-      cncserver.ipc.initServer({ localRunner: true }, function () {
+    cncserver.settings.loadBotConfig(() => {
+      cncserver.ipc.initServer({ localRunner: true }, () => {
         // Runner is ready! Attempt Initial Serial Connection.
         cncserver.serial.connect({
-          error: function () {
+          error: () => {
             console.error('CONNECTSERIAL ERROR!');
             cncserver.serial.localTrigger('simulationStart');
             cncserver.serial.localTrigger('serialReady');
           },
-          connect: function () {
+          connect: () => {
             console.log('CONNECTSERIAL CONNECT!');
             cncserver.serial.localTrigger('serialReady');
           },
-          disconnect: function () {
+          disconnect: () => {
             cncserver.serial.localTrigger('serialClose');
           },
         });
@@ -143,7 +143,7 @@ cncserver.settings.loadGlobalConfig(function standaloneOrModuleInit() {
     module.exports = cncserver.exports;
 
     // Connect to serial and start server
-    module.exports.start = function (options) {
+    module.exports.start = (options) => {
       // Add low-level short-circuit to avoid Socket.IO overhead
       if (typeof options.bufferUpdate === 'function') {
         module.exports.bufferUpdateTrigger = options.bufferUpdate;
@@ -153,30 +153,30 @@ cncserver.settings.loadGlobalConfig(function standaloneOrModuleInit() {
         module.exports.penUpdateTrigger = options.penUpdate;
       }
 
-      cncserver.settings.loadBotConfig(function () {
+      cncserver.settings.loadBotConfig(() => {
         // Before we can attempt to connect to the serialport, we must ensure
         // The IPC runner is connected...
 
         cncserver.ipc.initServer(
           { localRunner: options.localRunner },
-          function () {
+          () => {
             // Runner is ready! Attempt Initial Serial Connection.
             cncserver.serial.connect({
-              success: function () {
+              success: () => {
                 // Successfully connected
                 if (options.success) options.success();
               },
-              connect: function () {
+              connect: () => {
                 // Callback for first serial connect, or re-connect
                 cncserver.serial.localTrigger('serialReady');
                 if (options.connect) options.connect();
               },
-              disconnect: function () {
+              disconnect: () => {
                 // Callback for serial disconnect
                 cncserver.serial.localTrigger('serialClose');
                 if (options.disconnect) options.disconnect();
               },
-              error: function (info) {
+              error: (info) => {
                 if (options.error) options.error(info);
                 cncserver.serial.localTrigger('simulationStart');
                 cncserver.serial.localTrigger('serialReady');
@@ -194,12 +194,12 @@ cncserver.settings.loadGlobalConfig(function standaloneOrModuleInit() {
     };
 
     // Continue with simulation mode
-    module.exports.continueSimulation = function () {
+    module.exports.continueSimulation = () => {
       cncserver.serial.localTrigger('simulationStart');
     };
 
     // Export Serial Ready Init (starts webserver)
-    module.exports.serialReadyInit = function () {
+    module.exports.serialReadyInit = () => {
       cncserver.serial.localTrigger('serialReady');
     };
   }

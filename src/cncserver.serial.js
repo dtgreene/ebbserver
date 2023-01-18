@@ -8,7 +8,7 @@
  */
 const { SerialPort } = require('serialport');
 
-module.exports = function (cncserver) {
+module.exports = (cncserver) => {
   cncserver.serial = {
     callbacks: {}, // Hold global serial connection/error callbacks.
     connectPath: '{auto}',
@@ -25,7 +25,7 @@ module.exports = function (cncserver) {
    *     disconnect: Callback for close/unexpected disconnect
    *     complete: Callback for general completion
    */
-  cncserver.serial.connect = function (options) {
+  cncserver.serial.connect = (options) => {
     // Apply any passed callbacks to a new serial callbacks object.
     cncserver.serial.callbacks = {
       connect: options.connect,
@@ -37,7 +37,7 @@ module.exports = function (cncserver) {
     // Run everything through the callback as port list is async.
     console.log('Finding available serial ports...');
     const botController = cncserver.botConf.get('controller');
-    cncserver.serial.autoDetectPort(botController, function (ports) {
+    cncserver.serial.autoDetectPort(botController, (ports) => {
       // Give some console feedback on ports.
       if (cncserver.gConf.get('debug')) {
         console.log('Full Available Port Data:', ports.full);
@@ -104,7 +104,7 @@ module.exports = function (cncserver) {
    *     names {array}: Clean flat array of all available comm paths/port names.
    *     full {array}: Array of all valid serial port objects for debugging.
    */
-  cncserver.serial.autoDetectPort = function (botControllerConf, callback) {
+  cncserver.serial.autoDetectPort = (botControllerConf, callback) => {
     const botMaker = botControllerConf.manufacturer.toLowerCase();
     const botProductId = parseInt(botControllerConf.productId.toLowerCase());
     const botName = botControllerConf.name.toLowerCase();
@@ -156,19 +156,19 @@ module.exports = function (cncserver) {
 
         callback({ auto: detectList, names: portNames, full: cleanList });
       },
-      function (err) {
+      (err) => {
         throw new Error(err);
       },
     );
   };
 
   // Cheap wrapper!
-  cncserver.serial.command = function (cmd) {
+  cncserver.serial.command = (cmd) => {
     cncserver.ipc.sendMessage('serial.direct.write', cmd);
   };
 
   // Local triggers.
-  cncserver.serial.localTrigger = function (event) {
+  cncserver.serial.localTrigger = (event) => {
     switch (event) {
       case 'simulationStart':
         console.log('=======Continuing in SIMULATION MODE!!!============');
@@ -241,7 +241,7 @@ module.exports = function (cncserver) {
    * @param {integer} value
    *   Value to set to
    */
-  cncserver.serial.sendEBBSetup = function (id, value) {
+  cncserver.serial.sendEBBSetup = (id, value) => {
     cncserver.run('custom', 'SC,' + id + ',' + value);
   };
 

@@ -94,7 +94,7 @@ piggyback on that awesomesauce and make an endpoint your own for your custom scr
 manage? Well, _this is the function for you!_
 
 ```javascript
-cncserver.createServerEndpoint('/v1/foo/:bar', function (req, res) {
+cncserver.createServerEndpoint('/v1/foo/:bar', (req, res) => {
   if (req.method == 'GET') {
     // Is this a GET request?
     if (req.params.bar == 'woot') {

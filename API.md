@@ -691,7 +691,7 @@ To use an event, just pass the named event type into your `socket.on` function
 like this:
 
 ```javascript
-socket.on('pen update', function (actualPen) {
+socket.on('pen update',  (actualPen) => {
   console.log('The pen just moved to x:' + actualPen.x + ' y:' + actualPen.y);
 });
 ```

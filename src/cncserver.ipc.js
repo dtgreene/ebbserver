@@ -11,7 +11,7 @@ let runnerInitCallback = null;
  *
  */
 
-module.exports = function (cncserver) {
+module.exports = (cncserver) => {
   cncserver.ipc = {
     runnerSocket: {}, // The IPC socket for communicating to the runner
   };
@@ -33,7 +33,7 @@ module.exports = function (cncserver) {
    *
    * @return {null}
    */
-  cncserver.ipc.sendMessage = function (command, data, socket) {
+  cncserver.ipc.sendMessage = (command, data, socket) => {
     if (typeof socket === 'undefined') {
       socket = cncserver.ipc.runnerSocket;
     }
@@ -57,11 +57,11 @@ module.exports = function (cncserver) {
    *
    * @return {null}
    */
-  cncserver.ipc.initServer = function (options, callback) {
+  cncserver.ipc.initServer = (options, callback) => {
     runnerInitCallback = callback;
 
     // Initialize and start the IPC Server...
-    ipc.serve(function () {
+    ipc.serve(() => {
       ipc.server.on('app.message', ipcGotMessage);
     });
 
@@ -83,29 +83,29 @@ module.exports = function (cncserver) {
     /**
      * Start up & init the Runner process via node
      */
-    init: function () {
+    init: () => {
       cncserver.ipc.runner.process = spawn('node', [
         __dirname + '/../runner/cncserver.runner',
       ]);
 
-      cncserver.ipc.runner.process.stdout.on('data', function (data) {
+      cncserver.ipc.runner.process.stdout.on('data', (data) => {
         data = data.toString().split('\n');
         for (const i in data) {
           if (data[i].length) console.log('RUNNER:' + data[i]);
         }
       });
 
-      cncserver.ipc.runner.process.stderr.on('data', function (data) {
+      cncserver.ipc.runner.process.stderr.on('data', (data) => {
         console.log('RUNNER ERROR: ' + data);
       });
 
-      cncserver.ipc.runner.process.on('exit', function (exitCode) {
+      cncserver.ipc.runner.process.on('exit', (exitCode) => {
         // TODO: Restart it? Who knows.
         console.log('RUNNER EXITED: ' + exitCode);
       });
     },
 
-    shutdown: function () {
+    shutdown: () => {
       console.log('Killing runner process before exiting...');
       cncserver.ipc.runner.process.kill();
       process.exit();

@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
  *
  */
 
-module.exports = function (cncserver) {
+module.exports = (cncserver) => {
   cncserver.app = express(); // Create router (app).
 
   // Setup the cental server object.
@@ -25,7 +25,7 @@ module.exports = function (cncserver) {
   /**
    * Attempt to start the server.
    */
-  cncserver.srv.start = function () {
+  cncserver.srv.start = () => {
     // Only run start server once...
     if (serverStarted) return;
     serverStarted = true;
@@ -33,10 +33,10 @@ module.exports = function (cncserver) {
     const hostname = cncserver.gConf.get('httpLocalOnly') ? 'localhost' : null;
 
     // Catch Addr in Use Error
-    cncserver.server.on('error', function (e) {
+    cncserver.server.on('error', (e) => {
       if (e.code === 'EADDRINUSE') {
         console.log('Address in use, retrying...');
-        setTimeout(function () {
+        setTimeout(() => {
           cncserver.srv.close();
           cncserver.server.listen(cncserver.gConf.get('httpPort'), hostname);
         }, 1000);
@@ -46,9 +46,9 @@ module.exports = function (cncserver) {
     cncserver.server.listen(
       cncserver.gConf.get('httpPort'),
       hostname,
-      function () {
+      () => {
         // Properly close down server on fail/close
-        process.on('SIGTERM', function (err) {
+        process.on('SIGTERM', (err) => {
           console.log(err);
           cncserver.srv.close();
         });
@@ -59,7 +59,7 @@ module.exports = function (cncserver) {
   /**
    * Attempt to close down the server.
    */
-  cncserver.srv.close = function () {
+  cncserver.srv.close = () => {
     try {
       cncserver.server.close();
     } catch (e) {

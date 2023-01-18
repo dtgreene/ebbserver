@@ -4,7 +4,7 @@
  * @file Abstraction module for the run/queue utilities for CNC Server!
  */
 
-module.exports = function (cncserver) {
+module.exports = (cncserver) => {
   // Buffer State variables
   cncserver.buffer = {
     dataSet: {}, // Holds the actual buffer data keyed by hash.
@@ -19,7 +19,7 @@ module.exports = function (cncserver) {
   /**
    * Helper function for clearing the buffer. Used mainly by plugins.
    */
-  cncserver.buffer.clear = function () {
+  cncserver.buffer.clear = () => {
     cncserver.buffer.data = [];
 
     // Reset the state of the buffer tip pen to the state of the actual robot.
@@ -30,7 +30,7 @@ module.exports = function (cncserver) {
   };
 
   // Pause the buffer running.
-  cncserver.buffer.pause = function () {
+  cncserver.buffer.pause = () => {
     cncserver.buffer.paused = true;
 
     // Hold on to the current actualPen to return to before resuming.
@@ -40,7 +40,7 @@ module.exports = function (cncserver) {
   };
 
   // Resume the buffer running.
-  cncserver.buffer.resume = function () {
+  cncserver.buffer.resume = () => {
     cncserver.buffer.paused = false;
     cncserver.buffer.pausePen = null;
     cncserver.ipc.sendMessage('buffer.resume');
@@ -48,7 +48,7 @@ module.exports = function (cncserver) {
   };
 
   // Toggle the state
-  cncserver.buffer.toggle = function (setPause) {
+  cncserver.buffer.toggle = (setPause) => {
     if (setPause && !cncserver.buffer.paused) {
       cncserver.buffer.pause();
     } else if (!setPause && cncserver.buffer.paused) {
@@ -57,7 +57,7 @@ module.exports = function (cncserver) {
   };
 
   // Add an object to the buffer.
-  cncserver.buffer.addItem = function (item) {
+  cncserver.buffer.addItem = (item) => {
     const hash = cncserver.utils.getHash(item);
     cncserver.buffer.data.unshift(hash);
     cncserver.buffer.dataSet[hash] = item;
@@ -72,7 +72,7 @@ module.exports = function (cncserver) {
   };
 
   // Event for when a buffer has been started.
-  cncserver.buffer.startItem = function (hash) {
+  cncserver.buffer.startItem = (hash) => {
     const index = cncserver.buffer.data.indexOf(hash);
     if (cncserver.buffer.dataSet[hash] && index > -1) {
       const item = cncserver.buffer.dataSet[hash];
@@ -95,7 +95,7 @@ module.exports = function (cncserver) {
   //
   // This should only be called by the process running the buffer, and denotes
   // when an item is run into the machine.
-  cncserver.buffer.removeItem = function (hash) {
+  cncserver.buffer.removeItem = (hash) => {
     const index = cncserver.buffer.data.indexOf(hash);
     if (cncserver.buffer.dataSet[hash] && index > -1) {
       cncserver.buffer.data.splice(index, 1);
@@ -123,7 +123,7 @@ module.exports = function (cncserver) {
   /**
    * Helper function for clearing the buffer.
    */
-  cncserver.buffer.clear = function (isEmpty) {
+  cncserver.buffer.clear = (isEmpty) => {
     cncserver.buffer.data = [];
     cncserver.buffer.dataSet = {};
 
@@ -165,7 +165,7 @@ module.exports = function (cncserver) {
    * @returns {boolean}
    *   Return false if failure, true if success
    */
-  cncserver.run = function (command, data, duration) {
+  cncserver.run = (command, data, duration) => {
     let c = '';
 
     // Sanity check duration to minimum of 1, int only
@@ -230,7 +230,7 @@ module.exports = function (cncserver) {
    * @return {array}
    *   Array of all serial command strings rendered from buffer item.
    */
-  cncserver.buffer.render = function (item) {
+  cncserver.buffer.render = (item) => {
     let commandOut = [];
 
     if (typeof item.command === 'object') {
@@ -283,7 +283,7 @@ module.exports = function (cncserver) {
    * @return {boolean}
    *   True if triggered, false if not applicable.
    */
-  cncserver.buffer.trigger = function (item) {
+  cncserver.buffer.trigger = (item) => {
     if (typeof item.command === 'function') {
       // Custom Callback buffer item
       // Just call the callback function.
@@ -317,7 +317,7 @@ module.exports = function (cncserver) {
    *   Serial command string intended to be outputted directly, empty string
    *   if error.
    */
-  cncserver.buffer.cmdstr = function (name, values) {
+  cncserver.buffer.cmdstr = (name, values) => {
     if (!name || !cncserver.bot.commands[name]) return ''; // Sanity check
 
     let out = cncserver.bot.commands[name];
