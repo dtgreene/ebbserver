@@ -114,7 +114,7 @@ cncserver.actualPen = Object.assign({}, cncserver.pen);
 // INTIAL SETUP ================================================================
 
 // Load the Global Configuration (from config, defaults & CL vars)
-cncserver.settings.loadGlobalConfig(function standaloneOrModuleInit() {
+cncserver.settings.loadGlobalConfig(() => {
   // Only if we're running standalone... try to start the server immediately!
   if (!module.parent) {
     // Load the bot specific configuration, defaulting to gConf bot type
